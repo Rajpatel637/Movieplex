@@ -442,6 +442,24 @@
   box-shadow: 0 4px 15px rgba(139, 69, 19, 0.2);
 }
 
+/* Google button styling */
+.auth-button.google {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.auth-button.google:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.auth-button.google svg {
+  margin-right: 8px;
+}
+
 /* Auth links styling */
 .auth-links {
   text-align: center;

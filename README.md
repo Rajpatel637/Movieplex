@@ -48,6 +48,8 @@ A comprehensive React-based movie discovery platform with advanced search, filte
 ### **API Integration**
 
 - **TMDB API**: The Movie Database for comprehensive movie data
+- **Firebase**: Authentication and user data storage
+- **Firestore**: Real-time database for user preferences and favorites
 - **Trailer Service**: YouTube and Vimeo integration for movie trailers
 - **Watch Providers**: Real-time streaming platform availability
 
@@ -251,6 +253,8 @@ src/
 
 - **React.js** - Frontend framework
 - **React Router** - Client-side routing
+- **Firebase** - Authentication and database
+- **Firestore** - Real-time NoSQL database
 - **Framer Motion** - Animation library
 - **Axios** - HTTP client for API requests
 - **Lucide React** - Icon library

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authService } from '../services/authService';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../config/firebase';
+import { firebaseAuthService } from '../services/firebaseAuthService';
 
 const AuthContext = createContext();
 
@@ -15,17 +17,36 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    // Check if user is already logged in and session is valid
-    const currentUser = authService.getCurrentUser();
-    if (currentUser && authService.isSessionValid()) {
-      setUser(currentUser);
-    } else if (currentUser) {
-      // Session expired, logout
-      authService.logout();
-    }
-    setLoading(false);
+    // Listen for Firebase auth state changes
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // User is signed in
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL,
+          emailVerified: firebaseUser.emailVerified
+        });
+
+        // Get user profile from Firestore
+        const profileResult = await firebaseAuthService.getUserDocument(firebaseUser.uid);
+        if (profileResult.success) {
+          setUserProfile(profileResult.data);
+        }
+      } else {
+        // User is signed out
+        setUser(null);
+        setUserProfile(null);
+      }
+      setLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
   const login = async (email, password) => {
@@ -33,14 +54,15 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(true);
       
-      // Call the synchronous login function
-      const userData = authService.login(email, password);
-      setUser(userData);
+      const result = await firebaseAuthService.signIn(email, password);
       
-      // Clear any previous errors
-      setError(null);
-      
-      return { success: true, user: userData };
+      if (result.success) {
+        setError(null);
+        return { success: true, user: result.user };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
     } catch (error) {
       console.error('Login error:', error);
       setError(error.message);
@@ -54,10 +76,22 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       setLoading(true);
-      const newUser = authService.register(userData);
-      setUser(newUser);
-      return { success: true, user: newUser };
+      
+      const result = await firebaseAuthService.signUp(
+        userData.email, 
+        userData.password, 
+        userData.name || userData.displayName
+      );
+      
+      if (result.success) {
+        setError(null);
+        return { success: true, user: result.user, message: result.message };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
     } catch (error) {
+      console.error('Register error:', error);
       setError(error.message);
       return { success: false, error: error.message };
     } finally {
@@ -65,30 +99,71 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    authService.logout();
-    setUser(null);
-    setError(null);
-  };
-
-  const updateProfile = async (updates) => {
+  const logout = async () => {
     try {
       setError(null);
-      const updatedUser = authService.updateProfile(updates);
-      setUser(updatedUser);
-      return { success: true, user: updatedUser };
+      const result = await firebaseAuthService.signOut();
+      
+      if (result.success) {
+        setUser(null);
+        setUserProfile(null);
+        setError(null);
+        return { success: true };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
     } catch (error) {
+      console.error('Logout error:', error);
       setError(error.message);
       return { success: false, error: error.message };
     }
   };
 
-  const changePassword = async (oldPassword, newPassword) => {
+  const loginWithGoogle = async () => {
     try {
       setError(null);
-      authService.changePassword(oldPassword, newPassword);
-      return { success: true };
+      setLoading(true);
+      
+      const result = await firebaseAuthService.signInWithGoogle();
+      
+      if (result.success) {
+        setError(null);
+        return { success: true, user: result.user };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
     } catch (error) {
+      console.error('Google login error:', error);
+      setError(error.message);
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateProfile = async (updates) => {
+    try {
+      setError(null);
+      
+      const result = await firebaseAuthService.updateUserProfile(updates);
+      
+      if (result.success) {
+        // Refresh user profile
+        if (user) {
+          const profileResult = await firebaseAuthService.getUserDocument(user.uid);
+          if (profileResult.success) {
+            setUserProfile(profileResult.data);
+          }
+        }
+        return { success: true };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      console.error('Update profile error:', error);
       setError(error.message);
       return { success: false, error: error.message };
     }
@@ -97,28 +172,96 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (email) => {
     try {
       setError(null);
-      const tempPassword = authService.resetPassword(email);
-      return { success: true, tempPassword };
+      
+      const result = await firebaseAuthService.resetPassword(email);
+      
+      if (result.success) {
+        return { success: true, message: result.message };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
     } catch (error) {
+      console.error('Reset password error:', error);
       setError(error.message);
       return { success: false, error: error.message };
     }
   };
 
-  const updatePreferences = async (preferences) => {
+  const addToFavorites = async (movieId, movieData) => {
     try {
       setError(null);
-      const updatedUser = authService.updatePreferences(preferences);
-      setUser(updatedUser);
-      return { success: true };
+      
+      const result = await firebaseAuthService.addToFavorites(movieId, movieData);
+      
+      if (result.success && user) {
+        // Refresh user profile to get updated favorites
+        const profileResult = await firebaseAuthService.getUserDocument(user.uid);
+        if (profileResult.success) {
+          setUserProfile(profileResult.data);
+        }
+        return { success: true };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
     } catch (error) {
+      console.error('Add to favorites error:', error);
+      setError(error.message);
+      return { success: false, error: error.message };
+    }
+  };
+
+  const removeFromFavorites = async (movieId) => {
+    try {
+      setError(null);
+      
+      const result = await firebaseAuthService.removeFromFavorites(movieId);
+      
+      if (result.success && user) {
+        // Refresh user profile to get updated favorites
+        const profileResult = await firebaseAuthService.getUserDocument(user.uid);
+        if (profileResult.success) {
+          setUserProfile(profileResult.data);
+        }
+        return { success: true };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      console.error('Remove from favorites error:', error);
+      setError(error.message);
+      return { success: false, error: error.message };
+    }
+  };
+
+  const rateMovie = async (movieId, rating, review = null) => {
+    try {
+      setError(null);
+      
+      const result = await firebaseAuthService.rateMovie(movieId, rating, review);
+      
+      if (result.success && user) {
+        // Refresh user profile to get updated ratings
+        const profileResult = await firebaseAuthService.getUserDocument(user.uid);
+        if (profileResult.success) {
+          setUserProfile(profileResult.data);
+        }
+        return { success: true };
+      } else {
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      console.error('Rate movie error:', error);
       setError(error.message);
       return { success: false, error: error.message };
     }
   };
 
   const isAuthenticated = () => {
-    return user !== null && authService.isSessionValid();
+    return user !== null && user.emailVerified;
   };
 
   const clearError = () => {
@@ -127,19 +270,20 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    userProfile,
     loading,
     error,
     login,
     register,
     logout,
+    loginWithGoogle,
     updateProfile,
-    changePassword,
     resetPassword,
-    updatePreferences,
+    addToFavorites,
+    removeFromFavorites,
+    rateMovie,
     isAuthenticated,
-    clearError,
-    // Direct access to auth service methods
-    authService
+    clearError
   };
 
   return (
