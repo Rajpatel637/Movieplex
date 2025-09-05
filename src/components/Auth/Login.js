@@ -69,12 +69,18 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
+    if (loading) return; // Prevent multiple calls
+    
     setLoading(true);
     setError('');
     setSuccess('');
 
     try {
+      console.log('🔍 Attempting Google login...');
+      
       const result = await loginWithGoogle();
+      
+      console.log('📊 Google login result:', result);
       
       if (result.success) {
         setSuccess('Google login successful! Redirecting...');
@@ -89,12 +95,13 @@ const Login = () => {
         setTimeout(() => {
           const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/';
           navigate(redirectTo);
-        }, 500);
+        }, 1000);
       } else {
+        console.error('❌ Google login failed:', result.error);
         setError(result.error || 'Google login failed. Please try again.');
       }
     } catch (err) {
-      console.error('Google login error:', err);
+      console.error('❌ Google login error:', err);
       setError('Google login failed. Please try again.');
     } finally {
       setLoading(false);

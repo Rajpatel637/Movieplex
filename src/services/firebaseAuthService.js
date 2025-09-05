@@ -34,6 +34,13 @@ class FirebaseAuthService {
     this.currentUser = null;
     this.googleProvider = new GoogleAuthProvider();
     
+    // Configure Google Auth Provider
+    this.googleProvider.addScope('profile');
+    this.googleProvider.addScope('email');
+    this.googleProvider.setCustomParameters({
+      prompt: 'select_account'
+    });
+    
     // Listen for auth state changes
     onAuthStateChanged(auth, (user) => {
       this.currentUser = user;
@@ -113,15 +120,22 @@ class FirebaseAuthService {
   // Sign in with Google
   async signInWithGoogle() {
     try {
+      console.log('🔍 Starting Google sign-in...');
+      
       const result = await signInWithPopup(auth, this.googleProvider);
       const user = result.user;
+      
+      console.log('✅ Google sign-in successful:', user.email);
 
       // Create or update user document
       await this.createUserDocument(user, {
         displayName: user.displayName,
         photoURL: user.photoURL,
-        provider: 'google'
+        provider: 'google',
+        lastLogin: serverTimestamp()
       });
+
+      console.log('✅ User document created/updated');
 
       return {
         success: true,
@@ -134,10 +148,13 @@ class FirebaseAuthService {
         }
       };
     } catch (error) {
-      console.error('Google sign in error:', error);
+      console.error('❌ Google sign in error:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      
       return {
         success: false,
-        error: this.getErrorMessage(error.code)
+        error: this.getGoogleErrorMessage(error.code, error.message)
       };
     }
   }
@@ -323,6 +340,24 @@ class FirebaseAuthService {
       console.error('Rate movie error:', error);
       return { success: false, error: error.message };
     }
+  }
+
+  // Get Google-specific error message
+  getGoogleErrorMessage(errorCode, errorMessage) {
+    const googleErrorMessages = {
+      'auth/popup-closed-by-user': 'Google sign-in was cancelled. Please try again.',
+      'auth/popup-blocked': 'Pop-up was blocked by your browser. Please allow pop-ups and try again.',
+      'auth/cancelled-popup-request': 'Google sign-in was cancelled.',
+      'auth/network-request-failed': 'Network error. Please check your internet connection.',
+      'auth/internal-error': 'Google sign-in temporarily unavailable. Please try again.',
+      'auth/unauthorized-domain': 'This domain is not authorized for Google sign-in.',
+      'auth/operation-not-allowed': 'Google sign-in is not enabled for this project.',
+      'auth/invalid-api-key': 'Invalid API key configuration.',
+      'auth/app-deleted': 'Firebase project configuration error.'
+    };
+
+    // Return specific Google error message or fall back to general error handling
+    return googleErrorMessages[errorCode] || this.getErrorMessage(errorCode) || `Google sign-in failed: ${errorMessage}`;
   }
 
   // Get error message
