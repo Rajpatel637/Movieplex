@@ -83,6 +83,15 @@ const Login = () => {
       console.log('📊 Google login result:', result);
       
       if (result.success) {
+        // Google accounts are usually pre-verified, but let's check anyway
+        if (!result.user.emailVerified && result.user.email) {
+          setError('Please verify your email before accessing the app. Check your inbox for the verification link.');
+          setTimeout(() => {
+            navigate('/verify-email');
+          }, 2000);
+          return;
+        }
+        
         setSuccess('Google login successful! Redirecting...');
         
         // Switch analytics context to the Google user
@@ -154,6 +163,16 @@ const Login = () => {
       const result = await login(formData.email, formData.password);
       
       if (result.success) {
+        // Check if email is verified
+        if (!result.user.emailVerified) {
+          setError('Please verify your email before logging in. Check your inbox for the verification link.');
+          // Redirect to email verification page
+          setTimeout(() => {
+            navigate('/verify-email');
+          }, 2000);
+          return;
+        }
+        
         // Show success message briefly
         setSuccess('Login successful! Redirecting...');
         

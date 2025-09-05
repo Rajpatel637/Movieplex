@@ -104,7 +104,7 @@ const Register = () => {
       });
       
       if (result.success) {
-        setSuccess(result.message || 'Registration successful! Please check your email for verification.');
+        setSuccess(`✅ Account created successfully! 📧 A verification email has been sent to ${formData.email}. Please check your inbox (including spam folder) and click the verification link before logging in.`);
         
         // Switch analytics context to the new user
         analyticsService.switchUser(result.user?.uid);
@@ -115,9 +115,9 @@ const Register = () => {
           email: formData.email
         });
         
-        // Navigate after delay to show success message
+        // Navigate to email verification page instead of login
         setTimeout(() => {
-          navigate('/login?message=registration_success');
+          navigate('/verify-email');
         }, 2000);
       } else {
         setError(result.error || 'Registration failed. Please try again.');

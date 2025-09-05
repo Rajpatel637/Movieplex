@@ -33,9 +33,25 @@ const EmailVerification = () => {
     }
   };
 
-  const checkEmailVerified = () => {
-    // Refresh the page to check if email was verified
-    window.location.reload();
+  const checkEmailVerified = async () => {
+    try {
+      // Reload the current user to get fresh data from Firebase
+      await firebaseAuthService.getCurrentUser()?.reload();
+      
+      // Check if email is now verified
+      const currentUser = firebaseAuthService.getCurrentUser();
+      if (currentUser?.emailVerified) {
+        setMessage('Email verified successfully! Redirecting...');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500);
+      } else {
+        setError('Email not yet verified. Please check your inbox and click the verification link.');
+      }
+    } catch (error) {
+      console.error('Error checking verification status:', error);
+      setError('Failed to check verification status. Please try again.');
+    }
   };
 
   if (!user) {

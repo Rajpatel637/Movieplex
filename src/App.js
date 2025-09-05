@@ -11,6 +11,7 @@ import Analytics from './components/Analytics/Analytics';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import EmailVerification from './components/Auth/EmailVerification';
+import EmailVerifiedRoute from './components/Auth/EmailVerifiedRoute';
 import ApiStatusNotification from './components/Notification/ApiStatusNotification';
 import Footer from './components/Footer/Footer';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
@@ -120,15 +121,17 @@ const AnimatedRoutes = () => {
           </motion.div>
         } />
         <Route path="/favorites" element={
-          <motion.div
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={pageTransition}
-          >
-            <FavoritesPage />
-          </motion.div>
+          <EmailVerifiedRoute>
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <FavoritesPage />
+            </motion.div>
+          </EmailVerifiedRoute>
         } />
         <Route path="/watchlist" element={
           <motion.div
@@ -142,15 +145,17 @@ const AnimatedRoutes = () => {
           </motion.div>
         } />
         <Route path="/analytics" element={
-          <motion.div
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={pageTransition}
-          >
-            <Analytics />
-          </motion.div>
+          <EmailVerifiedRoute>
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <Analytics />
+            </motion.div>
+          </EmailVerifiedRoute>
         } />
         <Route path="/login" element={
           <motion.div
