@@ -55,19 +55,35 @@ class FirebaseAuthService {
   // Sign up with email and password
   async signUp(email, password, displayName) {
     try {
+      console.log('🔵 Starting user registration for:', email);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      console.log('✅ User created successfully:', user.uid);
 
       // Update user profile
+      console.log('🔄 Updating user profile...');
       await updateProfile(user, {
         displayName: displayName
       });
+      console.log('✅ User profile updated');
 
       // Send email verification
-      await sendEmailVerification(user);
+      console.log('📧 Sending email verification to:', user.email);
+      try {
+        await sendEmailVerification(user, {
+          url: window.location.origin + '/login?verified=true',
+          handleCodeInApp: false
+        });
+        console.log('✅ Email verification sent successfully');
+      } catch (emailError) {
+        console.error('❌ Failed to send email verification:', emailError);
+        // Don't fail the registration if email verification fails
+      }
 
       // Create user document in Firestore
+      console.log('🔄 Creating user document in Firestore...');
       await this.createUserDocument(user, { displayName });
+      console.log('✅ User document created in Firestore');
 
       return {
         success: true,
@@ -183,6 +199,40 @@ class FirebaseAuthService {
       };
     } catch (error) {
       console.error('Reset password error:', error);
+      return {
+        success: false,
+        error: this.getErrorMessage(error.code)
+      };
+    }
+  }
+
+  // Resend email verification
+  async resendEmailVerification() {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('No user signed in');
+      }
+
+      if (user.emailVerified) {
+        return {
+          success: false,
+          error: 'Email is already verified'
+        };
+      }
+
+      console.log('📧 Resending email verification to:', user.email);
+      await sendEmailVerification(user, {
+        url: window.location.origin + '/login?verified=true',
+        handleCodeInApp: false
+      });
+
+      return {
+        success: true,
+        message: 'Verification email sent! Please check your email.'
+      };
+    } catch (error) {
+      console.error('Resend email verification error:', error);
       return {
         success: false,
         error: this.getErrorMessage(error.code)

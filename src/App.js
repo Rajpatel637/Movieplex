@@ -10,6 +10,7 @@ import FavoritesPage from './components/Favorites/FavoritesPage';
 import Analytics from './components/Analytics/Analytics';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
+import EmailVerification from './components/Auth/EmailVerification';
 import ApiStatusNotification from './components/Notification/ApiStatusNotification';
 import Footer from './components/Footer/Footer';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
@@ -171,6 +172,17 @@ const AnimatedRoutes = () => {
             transition={pageTransition}
           >
             <Register />
+          </motion.div>
+        } />
+        <Route path="/verify-email" element={
+          <motion.div
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={pageTransition}
+          >
+            <EmailVerification />
           </motion.div>
         } />
         {/* Catch all routes and redirect to home */}

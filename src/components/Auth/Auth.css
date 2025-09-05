@@ -616,3 +616,168 @@
     font-size: 0.7rem;
   }
 }
+
+/* Email Verification Styles */
+.email-verification {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 20px auto;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.email-verification.verified {
+  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(74, 222, 128, 0.05);
+}
+
+.email-verification.pending {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.05);
+}
+
+.verification-content {
+  text-align: center;
+}
+
+.verification-content .icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  display: block;
+}
+
+.verified-icon {
+  color: #4ade80;
+}
+
+.pending-icon {
+  color: #fbbf24;
+}
+
+.verification-content h3 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.verification-content p {
+  color: #d1d5db;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.verification-actions {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.verification-actions button {
+  flex: 1;
+  min-width: 180px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.verification-actions .btn-primary {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
+  color: white;
+}
+
+.verification-actions .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 87, 34, 0.4);
+}
+
+.verification-actions .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.verification-actions .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.verification-actions .btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.verification-tips {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.verification-tips h4 {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.verification-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.verification-tips li {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  padding: 4px 0;
+  position: relative;
+  padding-left: 20px;
+}
+
+.verification-tips li::before {
+  content: "•";
+  color: #ff6b35;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .verification-actions {
+    flex-direction: column;
+  }
+  
+  .verification-actions button {
+    min-width: auto;
+    width: 100%;
+  }
+}
