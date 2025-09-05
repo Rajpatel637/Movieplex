@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, Eye, EyeOff, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
-import { authService } from '../../services/authService';
 import { analyticsService } from '../../services/analyticsService';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
@@ -97,27 +96,30 @@ const Register = () => {
     try {
       validateForm();
       
-      const user = authService.register({
+      const result = await register({
         name: formData.name,
         email: formData.email,
         password: formData.password
       });
       
-      if (user) {
-        setSuccess('Registration successful! Redirecting...');
+      if (result.success) {
+        setSuccess(result.message || 'Registration successful! Please check your email for verification.');
         
         // Switch analytics context to the new user
-        analyticsService.switchUser();
+        analyticsService.switchUser(result.user?.uid);
         
-        // Update auth context
-        register(user);
+        // Track successful registration
+        analyticsService.track('user_registration', {
+          method: 'email',
+          email: formData.email
+        });
         
-        // Navigate to home page with slight delay to show success message
+        // Navigate after delay to show success message
         setTimeout(() => {
-          navigate('/');
-        }, 500);
+          navigate('/login?message=registration_success');
+        }, 2000);
       } else {
-        setError('Registration failed. Please try again.');
+        setError(result.error || 'Registration failed. Please try again.');
       }
     } catch (err) {
       console.error('Registration error:', err);

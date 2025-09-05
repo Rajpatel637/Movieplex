@@ -21,7 +21,7 @@ const UserProfile = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const { user, logout, authService } = useAuth();
+  const { user, userProfile, logout } = useAuth();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -58,11 +58,11 @@ const UserProfile = () => {
   };
 
   const getUserStats = () => {
-    if (!user) return { favorites: 0, watchlist: 0, watched: 0 };
+    if (!user || !userProfile) return { favorites: 0, watchlist: 0, watched: 0 };
     
-    const favorites = authService.getFavorites().length;
-    const watchlist = authService.getWatchlist().length;
-    const watched = user.stats?.moviesWatched || 0;
+    const favorites = userProfile.favorites ? userProfile.favorites.length : 0;
+    const watchlist = userProfile.watchlist ? userProfile.watchlist.length : 0;
+    const watched = userProfile.stats?.moviesWatched || 0;
     
     return { favorites, watchlist, watched };
   };

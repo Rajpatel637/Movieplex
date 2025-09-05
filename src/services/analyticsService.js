@@ -1,16 +1,24 @@
 // Analytics Service for tracking user movie interactions
 import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
-import { authService } from './authService';
 
 class AnalyticsService {
   constructor() {
+    this.currentUserId = null;
+    this.updateStorageKey();
+    this.initializeStorage();
+  }
+
+  // Set current user ID for analytics
+  setCurrentUser(userId) {
+    this.currentUserId = userId;
     this.updateStorageKey();
     this.initializeStorage();
   }
 
   // Get user-specific storage key
   getStorageKey() {
-    return authService.getUserAnalyticsKey();
+    const userId = this.currentUserId || 'anonymous';
+    return `movieplex_analytics_${userId}`;
   }
 
   // Update storage key when user changes
@@ -46,7 +54,8 @@ class AnalyticsService {
   }
 
   // Switch user context (call when user logs in/out)
-  switchUser() {
+  switchUser(userId = null) {
+    this.currentUserId = userId;
     this.updateStorageKey();
     this.initializeStorage();
   }

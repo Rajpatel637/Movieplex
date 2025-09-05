@@ -46,6 +46,9 @@ const Login = () => {
       if (result.success) {
         setSuccess('Demo login successful! Redirecting...');
         
+        // Switch analytics context to the demo user
+        analyticsService.switchUser(result.user.uid);
+        
         analyticsService.track('demo_login', {
           userId: result.user.uid
         });
@@ -75,6 +78,9 @@ const Login = () => {
       
       if (result.success) {
         setSuccess('Google login successful! Redirecting...');
+        
+        // Switch analytics context to the Google user
+        analyticsService.switchUser(result.user.uid);
         
         analyticsService.track('google_login', {
           userId: result.user.uid
@@ -144,10 +150,13 @@ const Login = () => {
         // Show success message briefly
         setSuccess('Login successful! Redirecting...');
         
+        // Switch analytics context to the logged-in user
+        analyticsService.switchUser(result.user.uid);
+        
         // Track successful login
         analyticsService.track('user_login', {
           method: 'email',
-          userId: result.user.id
+          userId: result.user.uid
         });
         
         // Navigate after a brief delay to show success message
