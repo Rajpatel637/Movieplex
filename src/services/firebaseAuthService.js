@@ -67,14 +67,15 @@ class FirebaseAuthService {
       });
       console.log('✅ User profile updated');
 
-      // Send email verification
+      // Send email verification with enhanced settings
       console.log('📧 Sending email verification to:', user.email);
       try {
         await sendEmailVerification(user, {
-          url: window.location.origin + '/login?verified=true',
+          url: `${window.location.origin}/login?verified=true&welcome=true`,
           handleCodeInApp: false
         });
         console.log('✅ Email verification sent successfully');
+        console.log('💡 If email not received, check spam folder and mark as "Not Spam"');
       } catch (emailError) {
         console.error('❌ Failed to send email verification:', emailError);
         // Don't fail the registration if email verification fails

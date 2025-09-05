@@ -758,6 +758,237 @@
   font-weight: bold;
 }
 
+.spam-instructions {
+  background: rgba(255, 87, 34, 0.1);
+  border: 1px solid rgba(255, 87, 34, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+.spam-instructions p {
+  margin-bottom: 8px;
+  color: #ff6b35;
+  font-weight: 600;
+}
+
+.spam-instructions ol {
+  list-style: decimal;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.spam-instructions li {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  padding: 2px 0;
+  padding-left: 0;
+}
+
+.spam-instructions li::before {
+  display: none;
+}
+
+.spam-instructions code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #fbbf24;
+}
+
+/* Spam to Inbox Guide */
+.spam-guide {
+  background: rgba(255, 165, 0, 0.05);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spam-guide-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.spam-guide-header .warning-icon {
+  width: 48px;
+  height: 48px;
+  color: #fbbf24;
+  margin: 0 auto 12px;
+  display: block;
+}
+
+.spam-guide-header h3 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.spam-guide-header p {
+  color: #d1d5db;
+  font-size: 0.95rem;
+}
+
+.steps-container {
+  margin-bottom: 24px;
+}
+
+.step {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.step:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 165, 0, 0.3);
+}
+
+.step.active {
+  background: rgba(255, 165, 0, 0.1);
+  border-color: rgba(255, 165, 0, 0.4);
+}
+
+.step.completed {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 165, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+.step.completed .step-number {
+  background: rgba(74, 222, 128, 0.2);
+}
+
+.check-icon {
+  width: 18px;
+  height: 18px;
+  color: #4ade80;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h4 {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.step-details {
+  overflow: hidden;
+}
+
+.step-details p {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.step-details code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #fbbf24;
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.step-navigation button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.step-navigation .btn-primary {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
+  color: white;
+}
+
+.step-navigation .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.step-navigation button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.step-indicator {
+  color: #d1d5db;
+  font-size: 0.9rem;
+}
+
+.quick-tips {
+  background: rgba(255, 165, 0, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.quick-tips .icon {
+  width: 20px;
+  height: 20px;
+  color: #fbbf24;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.quick-tips h5 {
+  color: #fbbf24;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.quick-tips p {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
 .spinning {
   animation: spin 1s linear infinite;
 }

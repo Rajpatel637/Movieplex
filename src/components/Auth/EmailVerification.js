@@ -126,12 +126,31 @@ const EmailVerification = () => {
         </div>
 
         <div className="verification-tips">
-          <h4>Tips:</h4>
+          <h4>📧 Finding Your Verification Email:</h4>
           <ul>
-            <li>Check your spam/junk folder</li>
-            <li>Make sure the email address is correct</li>
-            <li>Wait a few minutes for the email to arrive</li>
-            <li>Try resending if you don't receive it</li>
+            <li><strong>Gmail Primary Inbox:</strong> Check your main inbox first</li>
+            <li><strong>Promotions Tab:</strong> Click the "Promotions" tab in Gmail</li>
+            <li><strong>Spam Folder:</strong> Most likely location - check "Spam" folder</li>
+            <li><strong>Search Gmail:</strong> Search for "movieplex", "verification", or "firebase"</li>
+          </ul>
+          
+          <h4>🎯 If Found in Spam - Important!</h4>
+          <div className="spam-instructions">
+            <p><strong>To ensure future emails reach your inbox:</strong></p>
+            <ol>
+              <li>Open the email in your Spam folder</li>
+              <li>Click "Not Spam" or "Report Not Spam"</li>
+              <li>Move the email to your Primary inbox</li>
+              <li>Add <code>noreply@movieplex-b29e4.firebaseapp.com</code> to your contacts</li>
+            </ol>
+          </div>
+          
+          <h4>💡 General Tips:</h4>
+          <ul>
+            <li>Wait 2-5 minutes for email delivery</li>
+            <li>Check your internet connection</li>
+            <li>Try with a different email provider if issues persist</li>
+            <li>Use the "Resend" button if email doesn't arrive</li>
           </ul>
         </div>
       </div>
