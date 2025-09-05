@@ -49,7 +49,7 @@ const Login = () => {
         // Switch analytics context to the demo user
         analyticsService.switchUser(result.user.uid);
         
-        analyticsService.track('demo_login', {
+        analyticsService.trackEvent('demo_login', {
           userId: result.user.uid
         });
         
@@ -88,7 +88,7 @@ const Login = () => {
         // Switch analytics context to the Google user
         analyticsService.switchUser(result.user.uid);
         
-        analyticsService.track('google_login', {
+        analyticsService.trackEvent('google_login', {
           userId: result.user.uid
         });
         
@@ -124,7 +124,7 @@ const Login = () => {
       if (result.success) {
         setSuccess(`Temporary password sent! Use: ${result.tempPassword}`);
         setForgotPasswordMode(false);
-        analyticsService.track('password_reset_requested', {
+        analyticsService.trackEvent('password_reset_requested', {
           email: formData.email
         });
       } else {
@@ -161,7 +161,7 @@ const Login = () => {
         analyticsService.switchUser(result.user.uid);
         
         // Track successful login
-        analyticsService.track('user_login', {
+        analyticsService.trackEvent('user_login', {
           method: 'email',
           userId: result.user.uid
         });
@@ -175,7 +175,7 @@ const Login = () => {
         setError(result.error || 'Login failed. Please check your credentials.');
         
         // Track failed login attempt
-        analyticsService.track('login_failed', {
+        analyticsService.trackEvent('login_failed', {
           email: formData.email,
           error: result.error
         });

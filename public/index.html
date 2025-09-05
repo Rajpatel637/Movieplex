@@ -20,5 +20,15 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    
+    <!-- Debug utilities for development -->
+    <script>
+      // Only load debug utilities in development
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const debugScript = document.createElement('script');
+        debugScript.src = '/debug-auth.js';
+        document.head.appendChild(debugScript);
+      }
+    </script>
   </body>
 </html>

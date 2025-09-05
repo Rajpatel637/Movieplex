@@ -15,6 +15,7 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [passwordStrength, setPasswordStrength] = useState(0);
@@ -109,7 +110,7 @@ const Register = () => {
         analyticsService.switchUser(result.user?.uid);
         
         // Track successful registration
-        analyticsService.track('user_registration', {
+        analyticsService.trackEvent('user_registration', {
           method: 'email',
           email: formData.email
         });

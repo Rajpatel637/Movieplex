@@ -22,8 +22,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Listen for Firebase auth state changes
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log('🔄 Auth state changed:', firebaseUser ? `User: ${firebaseUser.email}` : 'User signed out');
+      
       if (firebaseUser) {
         // User is signed in
+        console.log('✅ Setting user state:', {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          provider: firebaseUser.providerData[0]?.providerId
+        });
+        
         setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email,
@@ -35,10 +44,14 @@ export const AuthProvider = ({ children }) => {
         // Get user profile from Firestore
         const profileResult = await firebaseAuthService.getUserDocument(firebaseUser.uid);
         if (profileResult.success) {
+          console.log('📄 User profile loaded from Firestore');
           setUserProfile(profileResult.data);
+        } else {
+          console.log('⚠️ Failed to load user profile from Firestore');
         }
       } else {
         // User is signed out
+        console.log('🚪 User signed out - clearing state');
         setUser(null);
         setUserProfile(null);
       }
